@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -14,7 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('home.category.index');
+        // The title
+        $title = 'Category - index';
+        $category = Category::latest()->paginate(5);
+        return view('home.category.index', compact('category', 'title'));
     }
 
     /**
@@ -24,7 +30,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $title = "Category - Create";
+        return view('home.category.create', compact('title'));
     }
 
     /**
@@ -35,7 +42,23 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:100',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048'
+        ]);
+
+        // Melakukan upload image
+        $image = $request->file('image');
+        $image->storeAs('public/category', $image->hashName());
+
+        Category::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'image' => $image->hashName()
+        ]);
+
+        return redirect()->route('category.index')
+            ->with('success', 'Category has been added!');
     }
 
     /**
@@ -57,7 +80,11 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $title = "Category - Edit";
+
+        $category = Category::find($id);
+
+        return view('home.category.edit', compact('category', 'title'));
     }
 
     /**
@@ -69,7 +96,35 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:100',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:50048'
+        ]);
+
+        $category = Category::find($id);
+
+        if ($request->file('image') == '') {
+            $category->update([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name)
+            ]);
+            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah');
+        } else {
+            Storage::disk('local')->delete('public/category/' . basename($category->image));
+
+            $image = $request->file('image');
+            $image->storeAs('public/category/', $image->hashName());
+
+
+            $category->update([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image' => $image->hashName()
+            ]);
+            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah');
+        }
+
+        dd($category);
     }
 
     /**
@@ -80,6 +135,12 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::find($id);
+
+        Storage::disk('local')->delete('public/category/'.basename($category->image));
+
+        $category->delete();
+
+        return redirect()->route('category.index');
     }
 }

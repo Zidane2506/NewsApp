@@ -23,8 +23,17 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//handle redirect register to login
+// Route::match(['GET','POST'], '/register', function(){
+//     return redirect('/login');
+// });
 
-Route::resource('news', NewsController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('category', CategoryController::class);
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::resource('news', NewsController::class);
+
+        Route::resource('category', CategoryController::class)->middleware('auth');
+    });
+});
