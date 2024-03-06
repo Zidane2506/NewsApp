@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\News;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class NewsController extends Controller
 {
@@ -14,7 +17,8 @@ class NewsController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'News - Home';
+        return view('home.news.index', compact('title'));
     }
 
     /**
@@ -24,7 +28,10 @@ class NewsController extends Controller
      */
     public function create()
     {
-        //
+        $category = Category::all();
+
+        $title = 'News - Create';
+        return view('home.news.create', compact('title', 'category'));
     }
 
     /**
@@ -35,7 +42,26 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'title' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048',
+            'content' => 'required',
+            'category_id' => 'required'
+        ]);
+
+        // Mengupload Gambar
+        $image = $request->file('image');
+        $image->storeAs('public/news', $image->hashName());
+
+        News::create([
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'image' => $image->hashName(),
+            'content' => $request->content,
+        ]);
+
+        return redirect()->route('news.index');
     }
 
     /**

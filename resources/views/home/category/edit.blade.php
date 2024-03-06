@@ -1,6 +1,17 @@
 @extends('home.parent')
 
 @section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>
+                        <strong>{{ $error }}</strong>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="row">
         <div class="card">
             <h5 class="mt-2">Ini halaman Edit</h5>

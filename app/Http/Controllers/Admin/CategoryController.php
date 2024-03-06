@@ -108,7 +108,7 @@ class CategoryController extends Controller
                 'name' => $request->name,
                 'slug' => Str::slug($request->name)
             ]);
-            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah');
+            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah!');
         } else {
             Storage::disk('local')->delete('public/category/' . basename($category->image));
 
@@ -121,7 +121,7 @@ class CategoryController extends Controller
                 'slug' => Str::slug($request->name),
                 'image' => $image->hashName()
             ]);
-            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah');
+            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah!');
         }
 
         dd($category);
@@ -141,6 +141,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('success', 'Data Berhasil Dihapus!');
     }
 }

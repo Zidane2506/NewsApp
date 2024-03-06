@@ -3,6 +3,10 @@
 @section('content')
     <div class="row">
         <div class="card p-4">
+            @if (session('success'))
+                <div class="alert alert-success">
+                    <strong>{{ session('success') }}
+            @endif
             <h5>Category</h5>
             <div class="d-flex justify-content-end">
                 <a href="{{ route('category.create') }}" class="btn btn-primary">
