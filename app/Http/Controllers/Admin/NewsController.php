@@ -61,7 +61,7 @@ class NewsController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->route('news.index');
+        return redirect()->route('news.index')->with('success', 'Data berhasil');
     }
 
     /**

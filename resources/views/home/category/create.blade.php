@@ -31,7 +31,7 @@
                     </div>
                     <div class="d-flex justify-content-end mt-2">
                         <button type="submit" class="btn btn-primary mt-3">
-                            <i class="bi bi-pencil-squere"></i> Edit
+                            <i class="bi bi-pencil-squere"></i> Create
                         </button>
                     </div>
                 </form>
