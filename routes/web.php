@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\ProfileController;
 use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +31,14 @@ Auth::routes();
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [App\Http\Controllers\profileController::class, 'index'])->name('profile.index');
+    Route::get('/changePassword', [App\Http\Controllers\profileController::class, 'changePassword'])->name('profile.changePassword');
+
 
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::resource('news', NewsController::class);
+
+        Route::resource('profile', profileController::class);
 
         Route::resource('category', CategoryController::class)->middleware('auth');
     });

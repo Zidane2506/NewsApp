@@ -38,20 +38,20 @@
                                     <td>{{ $brosky->title }}</td>
                                     <td>{{ $brosky->category->name }}</td>
                                     <td>
-                                        <img src="{{ $brosky->image }}" alt="" width="100px"></td>
+                                        <img src="{{ $brosky->image }}" alt="" width="100px">
+                                    </td>
                                     <td>
                                         <img src="{{ $brosky->category->image }}" alt="" width="100px">
                                     </td>
                                     <td>
-                                        <div class="d-flex gap-2">  
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#">
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ route('news.show', $brosky->id) }}" class="btn btn-primary">
                                                 <i class="bi bi-eye"></i>
-                                            </button>
-                                            <a href="#" class="btn btn-warning">
+                                            </a>
+                                            <a href="{{ route('news.edit', $brosky->id) }}" class="btn btn-warning">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
-                                            <form action="#" method="POST">
+                                            <form action="{{ route('news.destroy', $brosky->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">
@@ -61,9 +61,9 @@
                                     </td>
                                 </tr>
                             @empty
-                            <p class="text-center">
-                                Data masih Kosong
-                            </p>
+                                <p class="text-center">
+                                    Data masih Kosong
+                                </p>
                             @endforelse
                         </tbody>
                     </table>
