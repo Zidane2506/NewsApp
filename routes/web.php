@@ -33,13 +33,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/profile', [App\Http\Controllers\profileController::class, 'index'])->name('profile.index');
     Route::get('/changePassword', [App\Http\Controllers\profileController::class, 'changePassword'])->name('profile.changePassword');
-
+    Route::put('/updatePassword', [App\Http\Controllers\profileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::get('/createProfile', [App\Http\Controllers\profileController::class, 'createProfile'])->name('createProfile');
+    Route::post('/storeProfile', [App\Http\Controllers\profileController::class, 'storeProfile'])->name('storeProfile');
+    Route::get('/editProfile', [App\Http\Controllers\profileController::class, 'editProfile'])->name('editProfile');
+    Route::put('/updateProfile', [App\Http\Controllers\profileController::class, 'updateProfile'])->name('updateProfile');
 
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::resource('news', NewsController::class);
-
         Route::resource('profile', profileController::class);
-
         Route::resource('category', CategoryController::class)->middleware('auth');
+        Route::get('/allUser', [App\Http\Controllers\profileController::class, 'allUser'])->name('allUser');
+        Route::put('/resetPassword/{id}', [App\Http\Controllers\profileController::class, 'resetPassword'])->name('resetPassword');
     });
 });

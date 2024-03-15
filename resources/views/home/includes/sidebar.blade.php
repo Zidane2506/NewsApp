@@ -11,6 +11,12 @@
         </li>
 
         @if (Auth::user()->role == 'admin')
+        <li class="nav-item">
+            <a class="nav-link " href="{{ route('allUser') }}">
+                <i class="bi bi-grid"></i>
+                <span>User</span>
+            </a>
+        </li>
             {{-- Category & News --}}
             <li class="nav-item">
                 <a class="nav-link" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#"

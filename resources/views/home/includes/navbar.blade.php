@@ -174,8 +174,9 @@
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="Profile" class="rounded-circle mb-2">
                         <h6>{{ Auth::user()->name }}</h6>
-                        <span>Web Designer</span>
+                        <span>Your Role : {{ Auth::user()->role }}</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -195,7 +196,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.changePassword') }}">
                             <i class="bi bi-question-circle"></i>
                             <span>Change Password</span>
                         </a>
