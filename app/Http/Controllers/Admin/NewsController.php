@@ -21,7 +21,7 @@ class NewsController extends Controller
     {
         $title = 'News - Home';
 
-        $news = News::latest()->paginate(5);
+        $news = News::latest()->paginate(20);
         $category = Category::all();
 
         return view('home.news.index', compact('title', 'news', 'category'));
