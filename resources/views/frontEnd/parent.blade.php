@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="{{ asset('home/assets/img/favicon.png')}}" rel="icon">
-    <link href="{{ asset('home/assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+    <link href="{{ asset('home/assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('home/assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,15 +21,15 @@
         rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="{{ asset('home/assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/aos/aos.css')}}" rel="stylesheet">
+    <link href="{{ asset('home/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('home/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('home/assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('home/assets/vendor/aos/aos.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS Files -->
-    <link href="{{ asset('home/assets/css/variables.css')}}" rel="stylesheet">
-    <link href="{{ asset('home/assets/css/main.css')}}" rel="stylesheet">
+    <link href="{{ asset('home/assets/css/variables.css') }}" rel="stylesheet">
+    <link href="{{ asset('home/assets/css/main.css') }}" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: ZenBlog
@@ -43,84 +43,13 @@
 <body>
 
     <!-- ======= Header ======= -->
-    @include('frontEnd.include.navbar')
+    @include('frontend.include.navbar')
     <!-- End Header -->
 
     <main id="main">
 
         {{-- <!-- ======= Hero Slider Section ======= -->
-        <section id="hero-slider" class="hero-slider">
-            <div class="container-md" data-aos="fade-in">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="swiper sliderFeaturedPosts">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                    <a href="single-post.html" class="img-bg d-flex align-items-end"
-                                        style="background-image: url('{{ asset('home/assets/img/post-slide-1.jpg')}}');">
-                                        <div class="img-bg-inner">
-                                            <h2>The Best Homemade Masks for Face (keep the Pimples Away)</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque
-                                                est mollitia! Beatae minima assumenda repellat harum vero, officiis
-                                                ipsam magnam obcaecati cumque maxime inventore repudiandae quidem
-                                                necessitatibus rem atque.</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="swiper-slide">
-                                    <a href="single-post.html" class="img-bg d-flex align-items-end"
-                                        style="background-image: url('{{ asset('home/assets/img/post-slide-2.jpg')}}');">
-                                        <div class="img-bg-inner">
-                                            <h2>17 Pictures of Medium Length Hair in Layers That Will Inspire Your New
-                                                Haircut</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque
-                                                est mollitia! Beatae minima assumenda repellat harum vero, officiis
-                                                ipsam magnam obcaecati cumque maxime inventore repudiandae quidem
-                                                necessitatibus rem atque.</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="swiper-slide">
-                                    <a href="single-post.html" class="img-bg d-flex align-items-end"
-                                        style="background-image: url('{{ asset('home/assets/img/post-slide-3.jpg')}}');">
-                                        <div class="img-bg-inner">
-                                            <h2>13 Amazing Poems from Shel Silverstein with Valuable Life Lessons</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque
-                                                est mollitia! Beatae minima assumenda repellat harum vero, officiis
-                                                ipsam magnam obcaecati cumque maxime inventore repudiandae quidem
-                                                necessitatibus rem atque.</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="swiper-slide">
-                                    <a href="single-post.html" class="img-bg d-flex align-items-end"
-                                        style="background-image: url('{{ asset('home/assets/img/post-slide-4.jpg')}}');">
-                                        <div class="img-bg-inner">
-                                            <h2>9 Half-up/half-down Hairstyles for Long and Medium Hair</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque
-                                                est mollitia! Beatae minima assumenda repellat harum vero, officiis
-                                                ipsam magnam obcaecati cumque maxime inventore repudiandae quidem
-                                                necessitatibus rem atque.</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="custom-swiper-button-next">
-                                <span class="bi-chevron-right"></span>
-                            </div>
-                            <div class="custom-swiper-button-prev">
-                                <span class="bi-chevron-left"></span>
-                            </div>
-
-                            <div class="swiper-pagination"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section><!-- End Hero Slider Section -->
+        <!-- End Hero Slider Section -->
 
         <!-- ======= Post Grid Section ======= -->
         <section id="posts" class="posts">
@@ -256,25 +185,25 @@
                 </div> <!-- End .row -->
             </div>
         </section> <!-- End Post Grid Section --> --}}
-@yield('content')
+        @yield('content')
 
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
-    @include('frontEnd.include.footer')
+    @include('frontend.include.footer')
 
     <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
-    <script src="{{ asset('home/assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
-    <script src="{{ asset('home/assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
-    <script src="{{ asset('home/assets/vendor/aos/aos.js')}}"></script>
-    <script src="{{ asset('home/assets/vendor/php-email-form/validate.js')}}"></script>
+    <script src="{{ asset('home/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('home/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('home/assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('home/assets/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- Template Main JS File -->
-    <script src="{{ asset('home/assets/js/main.js')}}"></script>
+    <script src="{{ asset('home/assets/js/main.js') }}"></script>
 
 </body>
 

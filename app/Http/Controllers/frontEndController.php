@@ -12,9 +12,29 @@ class frontEndController extends Controller
     {
         $category = Category::latest()->get();
 
-        $categoryNews = News::with('category')->latest()->get();
+        $sliderNews = News::latest()->limit(3)->get();
 
-        return view('frontEnd.news.index', compact('category', 'categoryNews'));
+        return view('frontend.news.index', compact('category', 'sliderNews'));
+    }
+
+    public function detailNews($slug) 
+    {
+        $category = Category::latest()->get();
+
+        $news = News::where('slug', $slug)->first();
+
+        return view('frontend.news.detail', compact('category', 'news'));
+    }
+
+    public function detailCategory($slug) 
+    {
+        $category = Category::latest()->get();
+
+        $detailCategory = Category::where('slug', $slug)->first();
+
+        $news = News::where('category_id', $detailCategory)->latest()->get();
+
+        return view('frontend.News.detailCategory', compact('category', 'detailCategory', 'news'));
     }
 
 }
