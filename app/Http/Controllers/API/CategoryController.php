@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -11,20 +12,16 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    //
     public function index()
     {
         try {
             $category = Category::latest()->get();
-            return ResponseFormatter::error(
-                $category,
-                'Data berhasil terlist'
-            );
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($category, 'List Data Of Category');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Get Category Data Failed', 500);
         }
     }
 
@@ -32,14 +29,12 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id);
-            return ResponseFormatter::success([
-                $category, 'Data By Id'
-            ]);
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($category, 'Category Data');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Get Data Category Failed', 500);
         }
     }
 
@@ -48,7 +43,7 @@ class CategoryController extends Controller
         try {
             $this->validate($request, [
                 'name' => 'required|unique:categories',
-                'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:200048',
+                'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             $image = $request->file('image');
@@ -60,15 +55,12 @@ class CategoryController extends Controller
                 'image' => $image->hashName()
             ]);
 
-            return ResponseFormatter::success(
-                $category,
-                'Data Berhasil Ditambah'
-            );
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($category, 'Category Successfully Created');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Store Category', 500);
         }
     }
 
@@ -77,27 +69,21 @@ class CategoryController extends Controller
         try {
             $this->validate($request, [
                 'name' => 'required',
-                'image' => 'image|mimes:jpg,png,jpeg'
+                'image' => 'image|mimes:jpg,jpeg,png|max:2048'
             ]);
 
-            //get category by id
             $category = Category::findOrFail($id);
 
-            //storage image
             if ($request->file('image') == '') {
                 $category->update([
                     'name' => $request->name,
                     'slug' => Str::slug($request->name)
                 ]);
             } else {
-                //jika gambarnya pengen di update hapus image lama
                 Storage::disk('local')->delete('public/category/' . basename($category->image));
 
-                //upload image baru
                 $image = $request->file('image');
-                $image->storeAs('public/category/', $image->hashName());
-
-                //update data
+                $image->storeAs('public/category', $image->hashName());
 
                 $category->update([
                     'name' => $request->name,
@@ -106,36 +92,29 @@ class CategoryController extends Controller
                 ]);
             }
 
-            return ResponseFormatter::success([
-                $category,
-                'data category berhasil di update'
-            ]);
-
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($category, 'Category Data Has Been Successfully Updated');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'massage' => 'Something went wrong',
+                "message" => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Update Category', 500);
         }
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         try {
             $category = Category::findOrFail($id);
+
             Storage::disk('local')->delete('public/category/' . basename($category->image));
 
             $category->delete();
 
-            return ResponseFormatter::success([
-                null,
-                'data category berhasil di Hapus'
-            ]);
-        } catch (\Exception $error) {
+            return ResponseFormatter::success(null, 'Category Data Has Been Successfully Deleted');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'massage' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Delete Data');
         }
     }
 }

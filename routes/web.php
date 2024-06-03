@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\NewsController;
-use App\Http\Controllers\ProfileController;
-use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Profile\ProfileController;
+use App\Http\Controllers\Frontend\FrontendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,32 +18,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\frontEndController::class, 'index'] );
-Route::get('/detail/news/{slug}', [\App\Http\Controllers\frontEndController::class, 'detailNews'])->name('detailNews');
-Route::get('/detail/category/{slug}', [\App\Http\Controllers\frontEndController::class, 'detailCategory'])->name('detailCategory');
+Route::get('/', [FrontendController::class, 'index']);
+Route::get('/detail/news/{slug}', [FrontendController::class, 'detailNews'])->name('detail-news');
+Route::get('/detail/category/{slug}', [FrontendController::class, 'detailCategory'])->name('detail-category');
 
 Auth::routes();
 
-//handle redirect register to login
-// Route::match(['GET','POST'], '/register', function(){
+// Route::match(['get', 'post'], '/register', function() {
 //     return redirect('/login');
 // });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/profile', [App\Http\Controllers\profileController::class, 'index'])->name('profile.index');
-    Route::get('/changePassword', [App\Http\Controllers\profileController::class, 'changePassword'])->name('profile.changePassword');
-    Route::put('/updatePassword', [App\Http\Controllers\profileController::class, 'updatePassword'])->name('profile.updatePassword');
-    Route::get('/createProfile', [App\Http\Controllers\profileController::class, 'createProfile'])->name('createProfile');
-    Route::post('/storeProfile', [App\Http\Controllers\profileController::class, 'storeProfile'])->name('storeProfile');
-    Route::get('/editProfile', [App\Http\Controllers\profileController::class, 'editProfile'])->name('editProfile');
-    Route::put('/updateProfile', [App\Http\Controllers\profileController::class, 'updateProfile'])->name('updateProfile');
+// Route Middleware
+Route::middleware('auth')->group(function() {
 
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/changepassword', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+    Route::put('/update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
+    Route::get('/create-profile', [ProfileController::class, 'createProfile'])->name('create-profile');
+    Route::post('/store-profile', [ProfileController::class, 'storeProfile'])->name('store-profile');
+
+    // Route for admin 
+    Route::middleware(['auth', 'admin'])->group(function() {
         Route::resource('news', NewsController::class);
-        Route::resource('profile', profileController::class);
-        Route::resource('category', CategoryController::class)->middleware('auth');
-        Route::get('/allUser', [App\Http\Controllers\profileController::class, 'allUser'])->name('allUser');
-        Route::put('/resetPassword/{id}', [App\Http\Controllers\profileController::class, 'resetPassword'])->name('resetPassword');
+        Route::resource('category', CategoryController::class)->except('show');
+        Route::get('all-user', [ProfileController::class, 'allUser'])->name('all-user');
+        Route::put('/reset-password/{id}', [ProfileController::class, 'resetPassword'])->name('reset-password');
+        Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
+        Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->name('update-profile');
     });
 });

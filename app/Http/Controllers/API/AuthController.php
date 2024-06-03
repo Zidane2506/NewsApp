@@ -2,47 +2,40 @@
 
 namespace App\Http\Controllers\API;
 
-use Exception;
-use App\Models\User;
-use App\Models\Category;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Client\Events\ResponseReceived;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
         try {
-            // Validate
             $this->validate($request, [
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
 
-            // cek Credentials (login)
             $credentials = request(['email', 'password']);
+
             if (!Auth::attempt([
                 'email' => $credentials['email'],
                 'password' => $credentials['password']
             ])) {
-                return ResponseFormatter::error([
-                    'message' => 'Unautorized'
-                ], 'Authentication Failed', 500);
+                return ResponseFormatter::error(['message' => 'Unautorized'], 'Authentication Failed', 500);
             }
 
-            // cek jika password tidak sesuai
+            // menampilkan error jika password tidak sesuai
             $user = User::where('email', $credentials['email'])->first();
             if (!Hash::check($request->password, $user->password, [])) {
-                throw new \Exception('Invalid Credentials');
+                throw new Exception('Invalid Credentials');
             }
-
-            //Jika berhasil cek password make loginkan
+            // jika berhasil maka loginkan
             $tokenResult = $user->createToken('authToken')->plainTextToken;
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
@@ -50,11 +43,15 @@ class AuthController extends Controller
                 'user' => $user
             ], 'Authenticated', 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                'message' => 'Something Went Wrong',
-                'error' => $error
-            ], 'Authentication Failed', 500);
-        };
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something Went Wrong',
+                    'error' => $error
+                ],
+                'Authentication Failed',
+                500
+            );
+        }
     }
 
     public function register(Request $request)
@@ -62,19 +59,17 @@ class AuthController extends Controller
         try {
             $this->validate($request, [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email|unique:users',
                 'password' => 'required|string|min:6',
-                'confrim_password' => 'required|string|min:6'
+                'confirm_password' => 'required|string|min:6'
             ]);
 
-            //cek kondisi password dan confirm password
-            if ($request->password != $request->confrim_password) {
+            if ($request->password !== $request->confirm_password) {
                 return ResponseFormatter::error([
-                    'massage' => 'Password not match',
+                    'message' => 'Password Not Match'
                 ], 'Authentication Failed', 401);
             }
 
-            //create akun
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -84,14 +79,15 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             $tokenResult = $user->createToken('authToken')->plainTextToken;
+
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user
             ], 'Authenticated', 200);
-        } catch (\Exception $error) {
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something Went Wrong',
+                'mesage' => 'Something Went Wrong',
                 'error' => $error
             ], 'Authentication Failed', 500);
         }
@@ -100,9 +96,16 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $token = $request->user()->currentAccessToken()->delete();
+
         return ResponseFormatter::success([
             $token, 'Token Revoked'
-        ], 'Token Revoked', 200);
+        ]);
+    }
+
+    public function allUsers()
+    {
+        $users = User::where('role', 'user')->get();
+        return ResponseFormatter::success($users, 'Data User Berhasil Diambil');
     }
 
     public function updatePassword(Request $request)
@@ -113,77 +116,59 @@ class AuthController extends Controller
                 'new_password' => 'required|string|min:6',
                 'confirm_password' => 'required|string|min:6'
             ]);
+
             $user = Auth::user();
 
             if (!Hash::check($request->old_password, $user->password)) {
                 return ResponseFormatter::error([
-                    'message' => 'Password Lama Tidak Dapat Diubah'
-                ], 'Authentication Failed', 500);
+                    'message' => 'Password Lama Tidak Sesuai'
+                ], 'Authentication Failed', 401);
             }
 
             if ($request->new_password !== $request->confirm_password) {
                 return ResponseFormatter::error([
                     'message' => 'Password Tidak Sesuai'
-                ], 'Authentication Failed', 500);
+                ], 'Authentication Failed', 401);
             }
 
             $user->password = Hash::make($request->new_password);
             $user->save();
 
             return ResponseFormatter::success([
-                'message' => 'password Berhasil Diubah'
-            ], 'Authenticated', 200);
-        } catch (\Exception $error) {
+                'message' => 'Password Berhasil Diubah'
+            ], 'Password Changed Successfully', 200);
+        } catch (Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Update Password Failed', 500);
         }
-    }
-
-    public function allUsers()
-    {
-        $user = User::where('role', 'user')->get();
-        return ResponseFormatter::success(
-            $user,
-            'Data User Berhasil DiAmbil'
-        );
     }
 
     public function storeProfile(Request $request)
     {
         try {
-            //validate
             $this->validate($request, [
-                'first_name' => 'required',
-                'image' => 'required|image|max:2048|mimes:jpg,jpeg,png'
+                'first_name' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
             ]);
 
-            // get data user
             $user = auth()->user();
-
-            //upload image
+ 
             $image = $request->file('image');
             $image->storeAs('public/profile', $image->hashName());
 
-            // create profile
             $user->profile()->create([
                 'first_name' => $request->first_name,
                 'image' => $image->hashName()
             ]);
 
-            // get data profile
-            $profile = $user->profile;
-
-            return ResponseFormatter::success(
-                $profile,
-                'Profile berhasil diupdate'
-            );
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($user->profile, 'Profile Has Been Created');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Update Profile', 500);
         }
     }
 
@@ -191,44 +176,40 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                'first_name' => 'required',
-                'image' => 'image|mimes:png,jpg,jpg|max:2024'
+                'first_name' => 'required|string|max:255',
+                'image' => 'image|mimes:jpeg,png,jpg|max:2048'
             ]);
 
-            // get user
             $user = auth()->user();
 
-            if(!$user->profile){
+            if (!$user->profile) {
                 return ResponseFormatter::error([
-                    'message' => 'profile not found, Pleas create the profile'
-                ], 'Authentic Failed', 200);
+                    'message' => 'Profile Not Found'
+                ], 'Failed To Update Profile', 404);
             }
-            //cek kondisi image bila tidak di uplod
+
             if ($request->file('image') == '') {
                 $user->profile->update([
                     'first_name' => $request->first_name
                 ]);
             } else {
-                Storage::delete('public/profile/' . basename($user->profile->image));
+                Storage::disk('local')->delete('public/profile/' . basename($user->image));
 
                 $image = $request->file('image');
-                $image->storeAs('public/profile', $image->getClientOriginalName());
+                $image->storeAs('public/profile', $image->hashName());
 
                 $user->profile->update([
                     'first_name' => $request->first_name,
-                    'image' => $image->getClientOriginalName()
+                    'image' => $image->hashName()
                 ]);
             }
 
-            return ResponseFormatter::success(
-                $user,
-                "data berhasil di edit"
-            );
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($user->profile, 'Data Profile Has Been Updated');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Someting error',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authenticated Failed', 500);
+            ], 'Failed To Update Profile', 500);
         }
     }
 }

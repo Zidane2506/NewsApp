@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use App\Models\News;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -15,15 +16,12 @@ class NewsController extends Controller
     {
         try {
             $news = News::latest()->get();
-            return ResponseFormatter::success(
-                $news,
-                'Data List Of News'
-            );
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($news, 'Data List Of News');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Get Data News Failed', 500);
         }
     }
 
@@ -31,14 +29,12 @@ class NewsController extends Controller
     {
         try {
             $news = News::findOrFail($id);
-            return ResponseFormatter::success([
-                $news, 'Data By Id'
-            ]);
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($news, 'News Data');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong',
+                'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Get Data News Failed', 500);
         }
     }
 
@@ -48,7 +44,7 @@ class NewsController extends Controller
             $this->validate($request, [
                 'title' => 'required',
                 'category_id' => 'required',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:1000000',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:5120',
                 'content' => 'required'
             ]);
 
@@ -56,42 +52,19 @@ class NewsController extends Controller
             $image->storeAs('public/news', $image->hashName());
 
             $news = News::create([
-                'title' => $request->category_id,
+                'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'category_id' => $request->category_id,
-                'content' => $request->content,
-                'image' => $image->hashName()
+                'image' => $image->hashName(),
+                'content' => $request->content
             ]);
 
-                return ResponseFormatter::success([
-                    $news, 'Data berhasil dibuat'
-                ]);
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($news, 'News Has Been Created');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            //get data by id
-            $news = News::find($id);
-
-            // delete image
-            Storage::disk('local')->delete('public/news/' . basename($news->image));
-
-            // delete data by id
-            $news->delete();
-            
-            return ResponseFormatter::success(null, 'Deleting news success');
-        } catch (\Exception $error) {
-            return ResponseFormatter::error([
-                'message' => 'Something wrong',
-                'error' => $error,
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Create News', 500);
         }
     }
 
@@ -99,13 +72,13 @@ class NewsController extends Controller
     {
         try {
             $this->validate($request, [
-                'title' => 'required',
+                'title' => 'required|max:255',
                 'category_id' => 'required',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:1000000',
-                'content' => 'required'
+                'content' => 'required',
+                'image' => 'image|mimes:jpg,jpeg,png|max:5120'
             ]);
 
-            $news = News::find($id);
+            $news = News::findOrFail($id);
 
             if ($request->file('image') == '') {
                 $news->update([
@@ -115,8 +88,8 @@ class NewsController extends Controller
                     'content' => $request->content
                 ]);
             } else {
-                Storage::disk('local')->delete('public/news/', basename($news->image));
-                
+                Storage::disk('local')->delete('public/news/' . basename($news->image));
+
                 $image = $request->file('image');
                 $image->storeAs('public/news', $image->hashName());
 
@@ -127,16 +100,32 @@ class NewsController extends Controller
                     'content' => $request->content,
                     'image' => $image->hashName()
                 ]);
+            };
 
-                return ResponseFormatter::success([
-                    $news, 'Data berhasil diupdate'
-                ]);
-            }
-        } catch (\Exception $error) {
+            return ResponseFormatter::success($news, 'Data News Has Been Updated');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something Went Wrong',
                 'error' => $error
-            ], 'Authentication Failed', 500);
+            ], 'Failed To Update News');
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $news = News::findOrFail($id);
+
+            Storage::disk('local')->delete('public/news/' . basename($news->image));
+
+            $news->delete();
+
+            return ResponseFormatter::success(null, 'News Has Been Deleted');
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                'message' => 'Something Went Wrong',
+                'error' => $error
+            ], 'Failed To Delete News', 500);
         }
     }
 }

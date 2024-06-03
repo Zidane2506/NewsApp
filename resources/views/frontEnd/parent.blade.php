@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="{{ asset('home/assets/img/favicon.png') }}" rel="icon">
-    <link href="{{ asset('home/assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    <link href="{{ asset('frontend/assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('frontend/assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,19 +21,19 @@
         rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="{{ asset('home/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('home/assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/vendor/aos/aos.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS Files -->
-    <link href="{{ asset('home/assets/css/variables.css') }}" rel="stylesheet">
-    <link href="{{ asset('home/assets/css/main.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/css/variables.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/assets/css/main.css') }}" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: ZenBlog
-  * Updated: Mar 13 2024 with Bootstrap v5.3.3
+  * Updated: Jan 29 2024 with Bootstrap v5.3.2
   * Template URL: https://bootstrapmade.com/zenblog-bootstrap-blog-template/
   * Author: BootstrapMade.com
   * License: https:///bootstrapmade.com/license/
@@ -48,16 +48,14 @@
 
     <main id="main">
 
-        {{-- <!-- ======= Hero Slider Section ======= -->
-        <!-- End Hero Slider Section -->
-
         <!-- ======= Post Grid Section ======= -->
-        <section id="posts" class="posts">
+        {{-- <section id="posts" class="posts">
             <div class="container" data-aos="fade-up">
                 <div class="row g-5">
                     <div class="col-lg-4">
                         <div class="post-entry-1 lg">
-                            <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-1.jpg')}}" alt=""
+                            <a href="single-post.html"><img
+                                    src="{{ asset('frontend/assets/img/post-landscape-1.jpg') }}" alt=""
                                     class="img-fluid"></a>
                             <div class="post-meta"><span class="date">Culture</span> <span
                                     class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
@@ -69,7 +67,7 @@
                                 atque eveniet, quo, praesentium dignissimos</p>
 
                             <div class="d-flex align-items-center author">
-                                <div class="photo"><img src="{{ asset('home/assets/img/person-1.jpg')}}" alt=""
+                                <div class="photo"><img src="assets/img/person-1.jpg" alt=""
                                         class="img-fluid"></div>
                                 <div class="name">
                                     <h3 class="m-0 p-0">Cameron Williamson</h3>
@@ -83,14 +81,16 @@
                         <div class="row g-5">
                             <div class="col-lg-4 border-start custom-border">
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-2.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-2.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Sport</span> <span
                                             class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
                                     <h2><a href="single-post.html">Let’s Get Back to Work, New York</a></h2>
                                 </div>
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-5.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-5.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Food</span> <span
                                             class="mx-1">&bullet;</span> <span>Jul 17th '22</span></div>
@@ -98,7 +98,8 @@
                                             Video Calls?</a></h2>
                                 </div>
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-7.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-7.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Design</span> <span
                                             class="mx-1">&bullet;</span> <span>Mar 15th '22</span></div>
@@ -108,7 +109,8 @@
                             </div>
                             <div class="col-lg-4 border-start custom-border">
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-3.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-3.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Business</span> <span
                                             class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
@@ -116,7 +118,8 @@
                                             Instagram</a></h2>
                                 </div>
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-6.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-6.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Tech</span> <span
                                             class="mx-1">&bullet;</span> <span>Mar 1st '22</span></div>
@@ -124,7 +127,8 @@
                                             Know</a></h2>
                                 </div>
                                 <div class="post-entry-1">
-                                    <a href="single-post.html"><img src="{{ asset('home/assets/img/post-landscape-8.jpg')}}"
+                                    <a href="single-post.html"><img
+                                            src="{{ asset('frontend/assets/img/post-landscape-8.jpg') }}"
                                             alt="" class="img-fluid"></a>
                                     <div class="post-meta"><span class="date">Travel</span> <span
                                             class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
@@ -184,26 +188,31 @@
 
                 </div> <!-- End .row -->
             </div>
-        </section> <!-- End Post Grid Section --> --}}
+        </section> --}}
+        <!-- End Post Grid Section -->
+
+        <!-- ======= Culture Category Section ======= -->
         @yield('content')
+        <!-- End Culture Category Section -->
 
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
     @include('frontend.include.footer')
+    {{-- END FOOTER --}}
 
     <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
-    <script src="{{ asset('home/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('home/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('home/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-    <script src="{{ asset('home/assets/vendor/aos/aos.js') }}"></script>
-    <script src="{{ asset('home/assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('frontend/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('frontend/assets/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- Template Main JS File -->
-    <script src="{{ asset('home/assets/js/main.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 
 </body>
 

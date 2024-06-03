@@ -15,7 +15,6 @@ class AdminSeeder extends Seeder
     public function run()
     {
         //make account for admin
-
         $admin = new \App\Models\User();
         $admin->name = 'Admin';
         $admin->email = 'admin@gmail.com';

@@ -31,45 +31,31 @@
     <!-- Template Main CSS File -->
     <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet">
 
+    {{-- CDeditor 5 cdn --}}
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+
     <!-- =======================================================
   * Template Name: NiceAdmin
-  * Updated: Jan 29 2024 with Bootstrap v5.3.2
+  * Updated: Jan 09 2024 with Bootstrap v5.3.2
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
-    ======================================================== -->
-
-    {{-- CKeditor 5 CDN --}}
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+  ======================================================== -->
 </head>
 
 <body>
 
-    <!-- ======= Header ======= -->
-    @include('home.includes.navbar')
-    <!-- End Header -->
+    @include('home.include.navbar')
 
-    <!-- ======= Sidebar ======= -->
-    @include('home.includes.sidebar')
-    <!-- End Sidebar-->
+    @include('home.include.sidebar')
 
     <main id="main" class="main">
+
         @yield('content')
+
     </main><!-- End #main -->
 
-    <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
-        <div class="copyright">
-            &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
-        </div>
-        <div class="credits">
-            <!-- All the links in the footer should remain intact. -->
-            <!-- You can delete the links only if you purchased the pro version. -->
-            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-        </div>
-    </footer><!-- End Footer -->
+    @include('home.include.footer')
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>

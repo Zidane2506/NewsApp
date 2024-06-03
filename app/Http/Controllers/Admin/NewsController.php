@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Contracts\Service\Attribute\Required;
 
 class NewsController extends Controller
 {
@@ -19,12 +18,11 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $title = 'News - Home';
-
-        $news = News::latest()->paginate(20);
+        $title = 'Index News';
+        // get data terbaru dari table news untuk dikirim ke view
+        $news = News::latest()->paginate(5);
         $category = Category::all();
-
-        return view('home.news.index', compact('title', 'news', 'category'));
+        return view('home.news.index', compact('title', 'category', 'news'));
     }
 
     /**
@@ -34,9 +32,10 @@ class NewsController extends Controller
      */
     public function create()
     {
+        $title = 'Add News';
+
         $category = Category::all();
 
-        $title = 'News - Create';
         return view('home.news.create', compact('title', 'category'));
     }
 
@@ -48,15 +47,16 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
+        //validate
         $this->validate($request, [
             'title' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048',
-            'content' => 'required',
-            'category_id' => 'required'
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+            'content' => 'required'
         ]);
 
-        // Mengupload Gambar
+        // upload image
         $image = $request->file('image');
+
         $image->storeAs('public/news', $image->hashName());
 
         News::create([
@@ -64,10 +64,10 @@ class NewsController extends Controller
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'image' => $image->hashName(),
-            'content' => $request->content,
+            'content' => $request->content
         ]);
 
-        return redirect()->route('news.index')->with('success', 'Data berhasil');
+        return redirect()->route('news.index');
     }
 
     /**
@@ -78,10 +78,8 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        $title = 'News - Show';
-
+        $title = 'News';
         $news = News::findOrFail($id);
-
         return view('home.news.show', compact('title', 'news'));
     }
 
@@ -93,11 +91,11 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
+        $title = 'News || Edit';
         $news = News::findOrFail($id);
         $category = Category::all();
-        $title = 'News - Edit';
 
-        return view('home.news.edit', compact('title', 'category', 'news'));
+        return view('home.news.edit', compact('title', 'news', 'category'));
     }
 
     /**
@@ -113,20 +111,12 @@ class NewsController extends Controller
             'title' => 'required|max:255',
             'category_id' => 'required',
             'content' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:50048'
+            'image' => 'image|mimes:jpg,jpeg,png|max:5120'
         ]);
 
         $news = News::findOrFail($id);
 
-        if ($request->file('image') == "") {
-            $news->update([
-                'title' => $request->title,
-                'slug' => Str::slug($request->title),
-                'category_id' => $request->category_id,
-                'content' => $request->content
-            ]);
-        } else {
-            $news = News::FindOrFail($id);
+        if ($request->file('image')) {
             Storage::disk('local')->delete('public/news/' . basename($news->image));
 
             $image = $request->file('image');
@@ -136,12 +126,19 @@ class NewsController extends Controller
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'category_id' => $request->category_id,
-                'image' => $image->hashName(),
+                'content' => $request->content,
+                'image'=> $image->hashName()
+            ]);
+        } else {
+            $news->update([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'category_id' => $request->category_id,
                 'content' => $request->content
             ]);
         };
 
-        return redirect()->route('news.index')->with('succes', 'News berhasil diubah');
+        return redirect()->route('news.index')->with('success', 'News Berhasil Diubah');
     }
 
     /**
@@ -158,6 +155,6 @@ class NewsController extends Controller
 
         $news->delete();
 
-        return redirect()->route('news.index');
+        return redirect()->route('news.index')->with('success', 'News Berhasil Dihapus');
     }
 }

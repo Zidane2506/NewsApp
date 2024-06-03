@@ -6,7 +6,9 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -17,8 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // The title
-        $title = 'Category - index';
+        $title = 'Category - Index';
         $category = Category::latest()->paginate(5);
         return view('home.category.index', compact('category', 'title'));
     }
@@ -30,7 +31,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $title = "Category - Create";
+        $title = 'Category - Index';
         return view('home.category.create', compact('title'));
     }
 
@@ -43,22 +44,47 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|max:100',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048'
+            'name' => 'required|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        // Melakukan upload image
+        $messages = [
+            'name.required' => 'Nama kategori wajib diisi',
+            'name.max' => 'Nama kategori maksimal 255 karakter',
+            'image.image' => 'File yang diupload harus gambar',
+            'image.mimes' => 'File yang diupload harus berformat jpeg, png, jpg',
+            'image.max' => 'Ukuran gambar maksimal 5MB',
+            'image.required' => 'Gambar wajib diisi'
+        ];
+
+        //membuat validasi
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg|max:5120|required'
+        ], $messages);
+
+        //jika validasi gagal
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $image = $request->file('image');
         $image->storeAs('public/category', $image->hashName());
 
-        Category::create([
+        // melakukan save to database
+
+        if (Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'image' => $image->hashName()
-        ]);
-
-        return redirect()->route('category.index')
-            ->with('success', 'Category has been added!');
+        ])) {
+            return redirect()->route('category.index')->with('success', 'Data Berhasil Ditambahkan');
+        } else {
+            // melakukan return redirect
+            return redirect()->route('category.create')->with(['error'], 'data gagal');
+        }
     }
 
     /**
@@ -80,11 +106,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $title = "Category - Edit";
-
+        $title = 'Category - Edit';
         $category = Category::find($id);
 
-        return view('home.category.edit', compact('category', 'title'));
+        return view('home.category.edit', compact('title', 'category'));
     }
 
     /**
@@ -97,8 +122,8 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|max:100',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:50048'
+            'name' => 'required|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         $category = Category::find($id);
@@ -108,23 +133,21 @@ class CategoryController extends Controller
                 'name' => $request->name,
                 'slug' => Str::slug($request->name)
             ]);
-            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah!');
         } else {
+            // Hapus image lama
             Storage::disk('local')->delete('public/category/' . basename($category->image));
 
             $image = $request->file('image');
-            $image->storeAs('public/category/', $image->hashName());
-
+            $image->storeAs('public/category', $image->hashName());
 
             $category->update([
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'image' => $image->hashName()
             ]);
-            return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah!');
         }
 
-        dd($category);
+        return redirect()->route('category.index')->with('success', 'Data Berhasil Diubah');
     }
 
     /**
@@ -137,10 +160,10 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        Storage::disk('local')->delete('public/category/'.basename($category->image));
+        Storage::disk('local')->delete('public/category/' . basename($category->image));
 
         $category->delete();
 
-        return redirect()->route('category.index')->with('success', 'Data Berhasil Dihapus!');
+        return redirect()->route('category.index')->with('success', 'Data Berhasil Dihapus');
     }
 }
